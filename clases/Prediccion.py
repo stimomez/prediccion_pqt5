@@ -12,6 +12,7 @@ def fill_nulls_with_mode(df, modes):
 
 # Reemplazar los valores nulos con la moda correspondiente
 df_filled = fill_nulls_with_mode(df, modes)
+# nofo
 
 # Verificar que no haya valores nulos restantes
 df_filled.show()
