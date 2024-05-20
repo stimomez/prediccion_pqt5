@@ -13,6 +13,9 @@ class VentanaPrincipal(QMainWindow):
         super(VentanaPrincipal, self).__init__()
         loadUi('./vistas/index.ui', self)
         
+        # Cambiar el título de la ventana principal
+        self.setWindowTitle('APLICACION AMIGA')
+        
         self.variables = {'predictora': None, 'independiente': []}
         self.df=[]
         self.llaveCheck=0
@@ -82,6 +85,10 @@ class VentanaPrincipal(QMainWindow):
         
         self.lblPrediccion = self.findChild(QLabel, 'lblPrediccion')  
         self.lblPrediccion.setVisible(True) 
+        
+        self.frPwerBi = self.findChild(QFrame, 'frPwerBi')
+        
+        
               
         
         
