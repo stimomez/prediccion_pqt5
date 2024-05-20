@@ -740,9 +740,9 @@ border-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0,
                 <widget class="QLabel" name="lblResumenEstadistico">
                  <property name="geometry">
                   <rect>
-                   <x>14</x>
+                   <x>4</x>
                    <y>40</y>
-                   <width>951</width>
+                   <width>961</width>
                    <height>151</height>
                   </rect>
                  </property>

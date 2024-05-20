@@ -1,7 +1,9 @@
-from PyQt5.QtWidgets import QFrame, QMainWindow, QFileDialog, QPushButton, QVBoxLayout, QLabel, QMessageBox, QWidget, QTextEdit, QApplication,QScrollArea,QCheckBox
+from PyQt5.QtWidgets import QFrame, QMainWindow, QFileDialog, QPushButton, QVBoxLayout, QLabel, QMessageBox,QTableWidgetItem, QWidget,QTableWidget, QTextEdit, QApplication,QScrollArea,QCheckBox
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import Qt
 from clases.AnalisisExploratorio import AnalisisExploratorio
+from clases.Prediccion import PrediccionML
+
 # from clases.Prediccion import prediccion
 
 import pandas as pd
@@ -100,24 +102,41 @@ class VentanaPrincipal(QMainWindow):
         archivo, _ = QFileDialog.getOpenFileName(self, "Seleccionar Archivo CSV", "", filtro, options=opciones)
         
         if archivo:
-         # Cargar el archivo CSV usando pandas
-                self.df = pd.read_csv(archivo)
+         # Cargar el archivo CSV usando
+                # self.df = pd.read_csv(archivo)
                 
+                
+                # obj_prediccion = PrediccionML()
+                # self.df = obj_prediccion.sparkReadCsv(filename=archivo)
                 # Crear un contenedor QVBoxLayout para las etiquetas
                 etiquetasTiposDatos = QVBoxLayout()
-                
-                #  # Crear un layout vertical para el frame frSeleccionar
-                # layoutSeleccionarCheckboxes = QVBoxLayout()
+                # print(self.df)
+                 # Crear un layout vertical para el frame frSeleccionar
+                layoutSeleccionarCheckboxes = QVBoxLayout()
 
-                 # Mostrar cantidad de filas y columnas
-                self.lblNFilas.setText(f"Filas: {len(self.df)}")
-                self.lblNColumnas.setText(f"Columnas: {len(self.df.columns)}")
+                #  # Mostrar cantidad de filas y columnas
+                # self.lblNFilas.setText(f"Filas: {len(self.df)}")
+                # self.lblNColumnas.setText(f"Columnas: {len(self.df.columns)}")
+                
+                
+                obj_prediccion = PrediccionML()
+                self.df = obj_prediccion.sparkReadCsv(filename=archivo)
+              
 
                 tipos_datos =[]
+                
+                self.lblNFilas.setText(f"Filas: {self.df.count()}")
+                self.lblNColumnas.setText(f"Columnas: {len(self.df.columns)}")
+                
+                tipos_datos = []
+                for columna, tipo in self.df.dtypes:
+                    tipos_datos.append({'columna': columna, 'tipo':tipo})
+                
+              
             # Mostrar nombre y tipo de datos de cada campo
                 
-                for columna, tipo in self.df.dtypes.items():
-                 tipos_datos.append({'columna': columna, 'tipo': str(tipo)})
+                # for columna, tipo in self.df.dtypes.items():
+                #  tipos_datos.append({'columna': columna, 'tipo': str(tipo)})
                  
                 for dato in tipos_datos:
                     etiqueta = QLabel(f"{dato['columna']} : {dato['tipo']}")
@@ -262,5 +281,6 @@ class VentanaPrincipal(QMainWindow):
             boton.clicked.disconnect()
         except TypeError:
             pass  # Ignorar el error si no había ninguna conexión previa
+  
 
    

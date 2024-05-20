@@ -2,40 +2,56 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+from pyspark.sql.functions import col
 
 class AnalisisExploratorio:
     def __init__(self, dataframe,columnas):
         self.df = dataframe
         self.columnas=columnas
 
+
+
+
     def mostrar_primeras_filas(self, n=5):
-        return self.df[self.columnas].head(n).to_string()
+        filas = self.df.select(self.columnas).limit(n).collect()
+        row_data =filas[0]        
+        # Convertir la fila en un diccionario
+        encabezado = row_data.asDict() 
+        #    columns=column_names
+        dataFramePanda=pd.DataFrame(filas,columns=encabezado.keys())
+        return dataFramePanda.to_string()
     
 
     def resumen_estadistico(self):
-        print("\nResumen estadístico de las columnas numéricas:")
-        return self.df[self.columnas].describe().to_string()
+        # return self.df[self.columnas].describe().to_string()
+        # Obtener un resumen estadístico del DataFrame
+        resumen = self.df[self.columnas].describe()
+
+        # Convertir el resumen estadístico a un DataFrame de Pandas
+        resumen_pandas = resumen.toPandas()
+
+        # Convertir el DataFrame de Pandas a una cadena
+        resumen_cadena = resumen_pandas.to_string()
+        
+        return resumen_cadena
+
 
  
-    def plot_distributions(self):
-        numeric_columns = self.df.select_dtypes(include=['float64', 'int64']).columns
-        for col in numeric_columns:
-            plt.figure(figsize=(10, 5))
-            sns.histplot(self.df[col].dropna(), kde=True)
-            plt.title(f'Distribución de {col}')
-            plt.show()
-
-        categorical_columns = self.df.select_dtypes(include=['object']).columns
-        for col in categorical_columns:
-            plt.figure(figsize=(10, 5))
-            sns.countplot(y=self.df[col].dropna())
-            plt.title(f'Distribución de {col}')
-            plt.show()
+   
 
   
 
     def valores_nulos(self):
-        valores_nulos = self.df[self.columnas].isnull().sum()
-        return  valores_nulos.to_string()
+        # Contar los valores nulos en la columna 'nombre_columna'
+        valores_nulos = self.df.where(col('OID').isNull()).count()
+        print(valores_nulos)
+        ## Verificar valores nulos en las columnas especificadas
+        valores_nulos = {col: self.df.filter(self.df[col].isNull()).count() for col in self.columnas}
+   
+        # Convertir el diccionario en una cadena formateada
+        texto_valores_nulos = "\n".join([f"{col}: {num_nulos}" for col, num_nulos in valores_nulos.items()])
+
+        
+        return  texto_valores_nulos
 
     
